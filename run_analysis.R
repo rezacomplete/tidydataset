@@ -1,3 +1,6 @@
+library(dplyr)
+library(plyr)
+
 # Load data sets
 x_train <- read.table("UCI HAR Dataset/train/X_train.txt")
 y_train <- read.table("UCI HAR Dataset/train/y_train.txt")
@@ -15,20 +18,20 @@ y <- rbind(y_train, y_test)
 
 # STEP 4 of the assignment - Label data set column headers with descriptive variavle names 
 names(dataset) <- features$V2  
-names(dataset) <- make.names(names(dataset))
 
 # STEP 2 of the assignment - Extract mean and standard deviation
 dataset_no_duplicate <- dataset[!duplicated(names(dataset))]
 mean <- select(dataset_no_duplicate, contains("mean()"))
 sd <- select(dataset_no_duplicate, contains("std()"))
 extract_dataset <- cbind(mean, sd)
+names(extract_dataset) <- make.names(names(extract_dataset))
 
 # STEP 3 of the assignment - Descriptive Activity names in the data set
 Activity <- sapply(y$V1, function(x,y) {return (y[[x]])}, activity_labels$V2)
 extract_dataset <- cbind(Activity, extract_dataset)
 
 # Combine data set and Subjects
-subject <- rename(subject, Subject=V1)
+subject <- dplyr::rename(subject, Subject=V1)
 extract_dataset <- cbind(subject, extract_dataset)
 
 # STEP 5 of the assignment - Independent tidy data set with the average of ....
